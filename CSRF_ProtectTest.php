@@ -26,7 +26,7 @@ class CSRF_ProtectTest extends PHPUnit_Framework_Testcase
 		$csrf1 = new CSRF_Protect();
 		$token = $csrf1->getToken();
 		
-		$this->assertTrue($csrf1->verifyToken($token));
+		$this->assertTrue($csrf1->isTokenValid($token));
 	}
 	
 	public function testVerifyFalse()
@@ -34,8 +34,8 @@ class CSRF_ProtectTest extends PHPUnit_Framework_Testcase
 		$csrf1 = new CSRF_Protect();
 		$token = $csrf1->getToken();
 		
-		$this->assertFalse($csrf1->verifyToken('abcd'));
-		$this->assertFalse($csrf1->verifyToken($token . ' '));
+		$this->assertFalse($csrf1->isTokenValid('abcd'));
+		$this->assertFalse($csrf1->isTokenValid($token . ' '));
 	}
 	
 	public function testTokenUniqueness()

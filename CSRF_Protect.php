@@ -9,20 +9,20 @@
 class CSRF_Protect
 {
 	/**
-	 * The name of the session variable where the random token is stored
+	 * The namespace for the session variable and form inputs
 	 * @var string
 	 */
-	private $sess_name;
+	private $namespace;
 	
 	/**
 	 * Initializes the session variable name, starts the session if not already so,
 	 * and initializes the token
 	 * 
-	 * @param string $sess_name
+	 * @param string $namespace
 	 */
-	public function __construct($sess_name = '_csrf')
+	public function __construct($namespace = '_csrf')
 	{
-		$this->sess_name = $sess_name;
+		$this->namespace = $namespace;
 		
 		if (session_id() === '')
 		{
@@ -48,9 +48,30 @@ class CSRF_Protect
 	 * @param string $userToken
 	 * @return boolean
 	 */
-	public function verifyToken($userToken)
+	public function isTokenValid($userToken)
 	{
 		return ($userToken === $this->readTokenFromStorage());
+	}
+	
+	/**
+	 * Echoes the HTML input field with the token, and namespace as the
+	 * name of the field
+	 */
+	public function echoInputField()
+	{
+		$token = $this->getToken();
+		echo "<input type=\"hidden\" name=\"{$this->namespace}\" value=\"{$token}\" />";
+	}
+	
+	/**
+	 * Verifies whether the post token was set, else dies with error
+	 */
+	public function verifyRequest()
+	{
+		if (!isTokenValid($_POST[$this->namespace]))
+		{
+			die("CSRF validation failed.");
+		}
 	}
 	
 	/**
@@ -74,9 +95,9 @@ class CSRF_Protect
 	 */
 	private function readTokenFromStorage()
 	{
-		if (isset($_SESSION[$this->sess_name]))
+		if (isset($_SESSION[$this->namespace]))
 		{
-			return $_SESSION[$this->sess_name];
+			return $_SESSION[$this->namespace];
 		}
 		else
 		{
@@ -89,6 +110,6 @@ class CSRF_Protect
 	 */
 	private function writeTokenToStorage($token)
 	{
-		$_SESSION[$this->sess_name] = $token;
+		$_SESSION[$this->namespace] = $token;
 	}
 }
