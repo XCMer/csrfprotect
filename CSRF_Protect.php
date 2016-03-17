@@ -68,7 +68,7 @@ class CSRF_Protect
 	 */
 	public function verifyRequest()
 	{
-		if (!isTokenValid($_POST[$this->namespace]))
+		if (!$this->isTokenValid($_POST[$this->namespace]))
 		{
 			die("CSRF validation failed.");
 		}
