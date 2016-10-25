@@ -43,6 +43,15 @@ class CSRF_Protect
 	}
 	
 	/**
+	 * Return the namespace for custom templates
+	 * 
+	 * @return string
+	 */
+	public function getNamespace(){
+		return $this->namespace;
+	}
+	
+	/**
 	 * Verify if supplied token matches the stored token
 	 * 
 	 * @param string $userToken
@@ -79,10 +88,10 @@ class CSRF_Protect
 	 */
 	public function isValidRequest()
 	{
-		if(!isset($_POST[$this->namespace]))
+		if(!isset($_REQUEST[$this->namespace]))
 			return false;
 		
-		if (!$this->isTokenValid($_POST[$this->namespace]))
+		if (!$this->isTokenValid($_REQUEST[$this->namespace]))
 			return false;
 		
 		return true;
